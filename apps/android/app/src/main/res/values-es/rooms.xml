@@ -1,0 +1,31 @@
+<resources>
+    <string name="rooms_create">Crear sala</string>
+    <string name="rooms_join">Entrar con código</string>
+    <string name="rooms_create_title">Crear una sala</string>
+    <string name="rooms_join_title">Entrar en una sala</string>
+    <string name="rooms_create_confirm">Crear</string>
+    <string name="rooms_join_confirm">Entrar</string>
+    <string name="rooms_name_label">Tu nombre</string>
+    <string name="rooms_code_label">Código de sala</string>
+    <string name="rooms_code_hint">6 letras y números</string>
+    <string name="rooms_status_connecting">Conectando…</string>
+    <string name="rooms_status_waiting">Esperando a un amigo…</string>
+    <string name="rooms_status_with">Con %1$s</string>
+    <string name="rooms_share">Compartir</string>
+    <string name="rooms_share_message">Entra en mi sala con este código: %1$s</string>
+    <string name="rooms_chat">Chat</string>
+    <string name="rooms_chat_empty">Saluda.</string>
+    <string name="rooms_chat_field">Mensaje</string>
+    <string name="rooms_chat_send">Enviar</string>
+    <string name="rooms_leave">Salir de la sala</string>
+    <string name="rooms_lost">Conexión perdida</string>
+    <string name="rooms_rejoin">Volver a entrar</string>
+    <string name="rooms_failure_not_found">Esa sala no existe o se ha cerrado. Revisa el código.</string>
+    <string name="rooms_failure_full">Esa sala está llena.</string>
+    <string name="rooms_failure_busy">El servidor está ocupado. Inténtalo de nuevo en un momento.</string>
+    <string name="rooms_failure_rate_limited">Demasiados intentos. Espera un minuto e inténtalo de nuevo.</string>
+    <string name="rooms_failure_offline">No se pudo conectar con el servidor de salas. Revisa tu conexión.</string>
+    <string name="rooms_failure_unavailable">Las salas no están configuradas en esta versión.</string>
+    <string name="settings_language">Idioma</string>
+    <string name="settings_language_footer">Mural usa el idioma de tu teléfono. Puedes cambiarlo solo para esta app en los ajustes del teléfono.</string>
+</resources>

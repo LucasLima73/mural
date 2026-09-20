@@ -1,0 +1,403 @@
+{
+  "source": {
+    "name": "BigSoundBank",
+    "url": "https://bigsoundbank.com",
+    "license": "CC0 1.0 Universal (public domain)",
+    "licenseUrl": "https://bigsoundbank.com/licenses.html",
+    "credit": "Additional sounds: Joseph SARDIN - BigSoundBank.com"
+  },
+  "textures": {
+    "brush": {
+      "kind": "slide",
+      "sources": [
+        {
+          "id": "1961",
+          "title": "Brush"
+        }
+      ]
+    },
+    "brushwood": {
+      "kind": "slide",
+      "sources": [
+        {
+          "id": "1106",
+          "title": "Brush on wood"
+        }
+      ]
+    },
+    "horsehair": {
+      "kind": "slide",
+      "sources": [
+        {
+          "id": "1856",
+          "title": "Horsehair brush"
+        }
+      ]
+    },
+    "broom": {
+      "kind": "slide",
+      "sources": [
+        {
+          "id": "0163",
+          "title": "Straw broom"
+        }
+      ]
+    },
+    "paper": {
+      "kind": "slide",
+      "sources": [
+        {
+          "id": "0785",
+          "title": "Paper"
+        }
+      ]
+    },
+    "newspaper": {
+      "kind": "slide",
+      "sources": [
+        {
+          "id": "1250",
+          "title": "News paper, pages"
+        }
+      ]
+    },
+    "coat": {
+      "kind": "slide",
+      "sources": [
+        {
+          "id": "1104",
+          "title": "Synthetic coat rubbed"
+        }
+      ]
+    },
+    "cloth": {
+      "kind": "slide",
+      "sources": [
+        {
+          "id": "0013",
+          "title": "Cloth"
+        }
+      ]
+    },
+    "foil": {
+      "kind": "slide",
+      "sources": [
+        {
+          "id": "0346",
+          "title": "Aluminium foil #1"
+        }
+      ]
+    },
+    "sponge": {
+      "kind": "slide",
+      "sources": [
+        {
+          "id": "0778",
+          "title": "Sponge and foam"
+        }
+      ]
+    },
+    "pencil": {
+      "kind": "slide",
+      "sources": [
+        {
+          "id": "0221",
+          "title": "Pencil #1"
+        }
+      ]
+    },
+    "marker": {
+      "kind": "slide",
+      "sources": [
+        {
+          "id": "1426",
+          "title": "Felt coloring"
+        }
+      ]
+    },
+    "mic": {
+      "kind": "tap",
+      "sources": [
+        {
+          "id": "2016",
+          "title": "Microphone, tapping #1"
+        },
+        {
+          "id": "2017",
+          "title": "Microphone, tapping #2"
+        },
+        {
+          "id": "2018",
+          "title": "Microphone, tapping #3"
+        },
+        {
+          "id": "2019",
+          "title": "Microphone, tapping #4"
+        }
+      ]
+    },
+    "finger": {
+      "kind": "tap",
+      "sources": [
+        {
+          "id": "1427",
+          "title": "Impatient finger tapping #1",
+          "hits": 4
+        }
+      ]
+    },
+    "key": {
+      "kind": "tap",
+      "sources": [
+        {
+          "id": "1733",
+          "title": "Slow keyboard",
+          "hits": 4
+        }
+      ]
+    },
+    "mouse": {
+      "kind": "tap",
+      "sources": [
+        {
+          "id": "1735",
+          "title": "Raspberry Mouse, Single Click"
+        },
+        {
+          "id": "1742",
+          "title": "Apple Magic Mouse, Single Click"
+        }
+      ]
+    },
+    "pen": {
+      "kind": "tap",
+      "sources": [
+        {
+          "id": "0613",
+          "title": "Pen click",
+          "hits": 4
+        }
+      ]
+    },
+    "coin": {
+      "kind": "tap",
+      "sources": [
+        {
+          "id": "0339",
+          "title": "Coin in cup #1"
+        },
+        {
+          "id": "0340",
+          "title": "Coin in cup #2"
+        },
+        {
+          "id": "0341",
+          "title": "Coin in cup #3"
+        }
+      ]
+    },
+    "glass": {
+      "kind": "tap",
+      "sources": [
+        {
+          "id": "0319",
+          "title": "Knock on a Glass Door #1"
+        },
+        {
+          "id": "0320",
+          "title": "Knock on a Glass Door #2"
+        }
+      ]
+    },
+    "knock": {
+      "kind": "tap",
+      "sources": [
+        {
+          "id": "0374",
+          "title": "Knock on a light door",
+          "hits": 4
+        }
+      ]
+    },
+    "drop": {
+      "kind": "tap",
+      "sources": [
+        {
+          "id": "1384",
+          "title": "Drops of water #1",
+          "hits": 4
+        }
+      ]
+    },
+    "switch": {
+      "kind": "tap",
+      "sources": [
+        {
+          "id": "0321",
+          "title": "Switch #5",
+          "hits": 3
+        }
+      ]
+    },
+    "bubblewrap": {
+      "kind": "tap",
+      "sources": [
+        {
+          "id": "0462",
+          "title": "Bubble wrap: Breakouts",
+          "hits": 4
+        }
+      ]
+    },
+    "typewriter": {
+      "kind": "tap",
+      "sources": [
+        {
+          "id": "2842",
+          "title": "Typewriter, Key"
+        }
+      ]
+    },
+    "rain": {
+      "kind": "ambient",
+      "sources": [
+        {
+          "id": "1019",
+          "title": "Summer Rain on Terrace"
+        }
+      ]
+    },
+    "roof": {
+      "kind": "ambient",
+      "sources": [
+        {
+          "id": "1293",
+          "title": "Rain on car roof"
+        }
+      ]
+    },
+    "metal": {
+      "kind": "ambient",
+      "sources": [
+        {
+          "id": "1291",
+          "title": "Rain on wheelbarrow"
+        }
+      ]
+    },
+    "fire": {
+      "kind": "ambient",
+      "sources": [
+        {
+          "id": "2857",
+          "title": "Fireplace #5"
+        }
+      ]
+    },
+    "wind": {
+      "kind": "ambient",
+      "sources": [
+        {
+          "id": "0904",
+          "title": "Wind in the Trees"
+        }
+      ]
+    },
+    "stream": {
+      "kind": "ambient",
+      "sources": [
+        {
+          "id": "1354",
+          "title": "Small Stream #4"
+        }
+      ]
+    },
+    "night": {
+      "kind": "ambient",
+      "sources": [
+        {
+          "id": "0621",
+          "title": "Night after rain"
+        }
+      ]
+    },
+    "waves": {
+      "kind": "ambient",
+      "sources": [
+        {
+          "id": "0266",
+          "title": "Sea: Waves"
+        }
+      ]
+    },
+    "boil": {
+      "kind": "ambient",
+      "sources": [
+        {
+          "id": "0149",
+          "title": "Boiling water"
+        }
+      ]
+    },
+    "rainstick": {
+      "kind": "ambient",
+      "sources": [
+        {
+          "id": "0464",
+          "title": "Rain stick"
+        }
+      ]
+    },
+    "cave": {
+      "kind": "ambient",
+      "sources": [
+        {
+          "id": "2136",
+          "title": "Cave #2"
+        }
+      ]
+    },
+    "crickets": {
+      "kind": "ambient",
+      "sources": [
+        {
+          "id": "1470",
+          "title": "Nocturnal Insects #4"
+        }
+      ]
+    },
+    "balloonpump": {
+      "kind": "slide",
+      "pad": false,
+      "sources": [
+        {
+          "id": "1129",
+          "title": "Balloon, inflation #1"
+        }
+      ]
+    },
+    "balloonburst": {
+      "kind": "tap",
+      "pad": false,
+      "sources": [
+        {
+          "id": "0551",
+          "title": "Balloon: burst"
+        }
+      ]
+    },
+    "slimesquish": {
+      "kind": "synth",
+      "pad": false,
+      "recipe": "squish",
+      "variants": 4,
+      "sources": []
+    },
+    "slimestretch": {
+      "kind": "synth",
+      "pad": false,
+      "recipe": "stretch",
+      "sources": []
+    }
+  }
+}

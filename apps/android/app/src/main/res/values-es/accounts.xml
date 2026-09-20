@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="talk_microphone_on">Micrófono activado</string>
-    <string name="talk_microphone_off">Micrófono desactivado</string>
-    <string name="talk_reply_any_language">Responde en el idioma que te salga.</string>
 
-    <string name="onboarding_subtitle_language">Idioma de los subtítulos</string>
     <string name="account_agreement">Al iniciar sesión, aceptas las Condiciones y confirmas que has leído la Política de privacidad.</string>
     <string name="account_title">Tu cuenta</string>
-    <string name="account_settings_detail">Acceso y tiempo de conversación</string>
     <string name="account_welcome">Estás en casa.</string>
     <string name="account_welcome_back">Qué bien verte de nuevo.</string>
     <string name="account_connected">Has iniciado sesión en Mural.</string>
@@ -18,10 +13,6 @@
     <string name="account_minutes_value">%1$s minutos</string>
     <string name="account_seconds_value">%1$s s</string>
     <string name="account_add_minutes">Añadir minutos</string>
-    <string name="account_conversation_source">Tus conversaciones</string>
-    <string name="account_use">Usar</string>
-    <string name="account_mural_minutes">Minutos de Mural</string>
-    <string name="account_personal_key">Tu clave API</string>
     <string name="account_local_data">Tu historial de aprendizaje se queda en este dispositivo. Expórtalo desde Ajustes para pasarlo a otro teléfono.</string>
     <string name="account_not_ready">El inicio de sesión no está disponible ahora. Puedes seguir usando Mural sin cuenta.</string>
     <string name="account_sign_out">Cerrar sesión</string>

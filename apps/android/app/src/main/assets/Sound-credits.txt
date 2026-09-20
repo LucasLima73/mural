@@ -1,0 +1,9 @@
+Touch sounds: recordings from BigSoundBank (https://bigsoundbank.com), released under CC0 1.0 Universal (public domain).
+
+Additional sounds: Joseph SARDIN - BigSoundBank.com
+
+The recordings were trimmed, looped, filtered and levelled for this app.
+
+Recordings used: Brush (s1961); Brush on wood (s1106); Horsehair brush (s1856); Straw broom (s0163); Paper (s0785); News paper, pages (s1250); Synthetic coat rubbed (s1104); Cloth (s0013); Aluminium foil #1 (s0346); Sponge and foam (s0778); Pencil #1 (s0221); Felt coloring (s1426); Microphone, tapping #1 (s2016); Microphone, tapping #2 (s2017); Microphone, tapping #3 (s2018); Microphone, tapping #4 (s2019); Impatient finger tapping #1 (s1427); Slow keyboard (s1733); Raspberry Mouse, Single Click (s1735); Apple Magic Mouse, Single Click (s1742); Pen click (s0613); Coin in cup #1 (s0339); Coin in cup #2 (s0340); Coin in cup #3 (s0341); Knock on a Glass Door #1 (s0319); Knock on a Glass Door #2 (s0320); Knock on a light door (s0374); Drops of water #1 (s1384); Switch #5 (s0321); Bubble wrap: Breakouts (s0462); Typewriter, Key (s2842); Summer Rain on Terrace (s1019); Rain on car roof (s1293); Rain on wheelbarrow (s1291); Fireplace #5 (s2857); Wind in the Trees (s0904); Small Stream #4 (s1354); Night after rain (s0621); Sea: Waves (s0266); Boiling water (s0149); Rain stick (s0464); Cave #2 (s2136); Nocturnal Insects #4 (s1470); Balloon, inflation #1 (s1129); Balloon: burst (s0551).
+
+The slime sounds were generated for this app.

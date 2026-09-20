@@ -1,15 +1,16 @@
 package chat.mural.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,12 +22,15 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -34,60 +38,60 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.ContextCompat
 import chat.mural.R
-import chat.mural.core.LanguageModule
-import chat.mural.core.LanguageRegistry
-import chat.mural.core.MeaningLanguages
+import chat.mural.audio.PanDemo
+import chat.mural.core.TouchBehavior
+import kotlinx.coroutines.launch
 
-const val AI_CONSENT_VERSION = 1
+private const val STEPS = 4
+private val GREETINGS = listOf("Hei!", "¡Hola!", "Hi!", "Salut !", "Hallo!", "Ciao!", "Olá!", "你好！")
 
+/**
+ * First-run screens: a name, a headphone check, what you like to hear, and the microphone. Each is skippable by
+ * pressing Continue, and the answers only shape Home and the pads.
+ */
 @Composable
-fun OnboardingScreen(
-    initialLanguageId: String,
-    initialMeaningLanguage: String,
-    onComplete: (languageId: String, meaningLanguage: String) -> Unit,
-) {
+fun OnboardingScreen(initialName: String, onComplete: (name: String, likes: List<TouchBehavior>) -> Unit) {
     var step by rememberSaveable { mutableIntStateOf(0) }
-    var languageId by rememberSaveable(initialLanguageId) { mutableStateOf(initialLanguageId) }
-    var meaningLanguage by rememberSaveable(initialMeaningLanguage) { mutableStateOf(initialMeaningLanguage) }
-    val language = LanguageRegistry.get(languageId) ?: LanguageRegistry.all.first()
+    var name by rememberSaveable { mutableStateOf(initialName) }
+    var likes by rememberSaveable { mutableStateOf(emptyList<String>()) }
     val phase = muralPhase()
-    val greetingIndex = ((phase / 2.736f).toInt()) % LanguageRegistry.all.size
-    val greeting = if (phase == 0f) language.greeting else LanguageRegistry.all[greetingIndex].greeting
+    val greeting = GREETINGS[((phase / 2.736f).toInt()) % GREETINGS.size]
     Box(Modifier.fillMaxSize()) {
         SoftAnimatedBackground(Modifier.fillMaxSize())
-        Column(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing)) {
+        Column(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing).imePadding()) {
             Row(Modifier.fillMaxWidth().height(64.dp).padding(horizontal = 26.dp), verticalAlignment = Alignment.CenterVertically) {
-                if (step == 1) SoftRoundButton(MuralSymbol.Back, stringResource(R.string.onboarding_back),
-                    onClick = { step = 0 }, modifier = Modifier.testTag("onboarding-back"), diameter = 44.dp)
+                if (step > 0) SoftRoundButton(MuralSymbol.Back, stringResource(R.string.onboarding_back),
+                    onClick = { step -= 1 }, modifier = Modifier.testTag("onboarding-back"), diameter = 44.dp)
                 else Brand()
                 Spacer(Modifier.weight(1f))
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    repeat(2) { index ->
+                    repeat(STEPS) { index ->
                         Box(Modifier.size(width = if (index == step) 24.dp else 8.dp, height = 6.dp)
                             .background(if (index == step) MuralColors.Orange else MuralColors.Peach, CircleShape))
                     }
@@ -96,172 +100,148 @@ fun OnboardingScreen(
             AnimatedContent(targetState = step, transitionSpec = { fadeIn(tween(350)) togetherWith fadeOut(tween(200)) },
                 modifier = Modifier.weight(1f), label = "onboarding step") { current ->
                 BoxWithConstraints(Modifier.fillMaxSize()) {
-                val compact = maxHeight < 620.dp
-                val orbSize = when {
-                    !compact -> if (current == 0) 142.dp else 104.dp
-                    current == 0 -> minOf(112.dp, maxHeight * .20f)
-                    else -> minOf(64.dp, maxHeight * .14f)
-                }
-                Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
-                    .padding(horizontal = 28.dp, vertical = if (compact) 12.dp else 24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally) {
-                    Spacer(Modifier.height(if (compact) 4.dp else if (current == 0) 20.dp else 4.dp))
-                    MuralOrb(modifier = Modifier.size(orbSize))
-                    AnimatedContent(greeting, transitionSpec = { fadeIn(tween(600)) togetherWith fadeOut(tween(350)) },
-                        label = "hello", modifier = Modifier.heightIn(min = when {
-                            compact -> if (current == 0) 64.dp else 48.dp
-                            else -> if (current == 0) 82.dp else 70.dp
-                        })) { hello ->
-                        Text(hello, style = when {
-                            compact -> if (current == 0) MaterialTheme.typography.displayMedium else MaterialTheme.typography.displaySmall
-                            else -> if (current == 0) MaterialTheme.typography.displayLarge else MaterialTheme.typography.displayMedium
-                        },
-                            modifier = Modifier.testTag("onboarding-greeting"), textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                    val compact = maxHeight < 620.dp
+                    val orbSize = when {
+                        !compact -> if (current == 0) 132.dp else 84.dp
+                        current == 0 -> minOf(104.dp, maxHeight * .20f)
+                        else -> minOf(56.dp, maxHeight * .12f)
                     }
-                    Spacer(Modifier.height(if (compact) 12.dp else 30.dp))
-                    if (current == 0) LanguageStep(languageId, compact) { languageId = it }
-                    else MeaningStep(language, meaningLanguage, compact) { meaningLanguage = it }
-                    Spacer(Modifier.height(if (compact) 8.dp else 16.dp))
-                }
+                    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+                        .padding(horizontal = 28.dp, vertical = if (compact) 12.dp else 24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally) {
+                        Spacer(Modifier.height(if (compact) 4.dp else if (current == 0) 12.dp else 0.dp))
+                        MuralOrb(modifier = Modifier.size(orbSize))
+                        AnimatedContent(greeting, transitionSpec = { fadeIn(tween(600)) togetherWith fadeOut(tween(350)) },
+                            label = "hello", modifier = Modifier.heightIn(min = if (current == 0) 76.dp else 54.dp)) { hello ->
+                            Text(hello, style = if (current == 0) MaterialTheme.typography.displayLarge else MaterialTheme.typography.displaySmall,
+                                modifier = Modifier.testTag("onboarding-greeting"), textAlign = TextAlign.Center)
+                        }
+                        Spacer(Modifier.height(if (compact) 8.dp else 22.dp))
+                        when (current) {
+                            0 -> NameStep(name, compact) { name = it }
+                            1 -> HeadphonesStep(compact)
+                            2 -> TastesStep(likes, compact) { likes = it }
+                            else -> MicrophoneStep(compact)
+                        }
+                        Spacer(Modifier.height(if (compact) 8.dp else 16.dp))
+                    }
                 }
             }
             Column(Modifier.fillMaxWidth().padding(horizontal = 26.dp).padding(top = 14.dp, bottom = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Button(onClick = {
-                    if (step == 0) {
-                        if (meaningLanguage == language.name) meaningLanguage = MeaningLanguages.all.firstOrNull { it != language.name } ?: "English"
-                        step = 1
-                    } else onComplete(languageId, meaningLanguage)
+                    if (step < STEPS - 1) step += 1
+                    else onComplete(name.trim(), likes.mapNotNull { key -> TouchBehavior.entries.firstOrNull { it.name == key } })
                 }, modifier = Modifier.fillMaxWidth().heightIn(min = 60.dp).testTag("onboarding-continue"), shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(containerColor = MuralColors.Orange, contentColor = MuralColors.Ink)) {
-                    Text(stringResource(if (step == 0) R.string.onboarding_continue_button else R.string.onboarding_choose_continue_button))
+                    Text(stringResource(if (step == STEPS - 1) R.string.onboarding_start_button else R.string.onboarding_continue_button))
                 }
-                Text(stringResource(if (step == 0) R.string.onboarding_pace_note_step0 else R.string.onboarding_pace_note_step1),
-                    style = MaterialTheme.typography.bodySmall, color = MuralColors.Secondary,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                Text(stringResource(when (step) {
+                    0 -> R.string.onboarding_name_note
+                    1 -> R.string.onboarding_phones_note
+                    2 -> R.string.onboarding_tastes_note
+                    else -> R.string.onboarding_mic_note
+                }), style = MaterialTheme.typography.bodySmall, color = MuralColors.Secondary, textAlign = TextAlign.Center)
             }
         }
     }
 }
 
 @Composable
-private fun LanguageStep(selected: String, compact: Boolean, onSelect: (String) -> Unit) {
-    val language = LanguageRegistry.get(selected) ?: LanguageRegistry.all.first()
-    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(if (compact) 16.dp else 24.dp)) {
-        Text(stringResource(R.string.onboarding_language_title), style = MaterialTheme.typography.headlineSmall,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            modifier = Modifier.semantics { heading() }.testTag("onboarding-language-title"))
-        LanguageDropdown(language.nativeName, language.settingsTitle, "onboarding-language-picker") { close ->
-            LanguageRegistry.all.forEach { option ->
-                androidx.compose.material3.DropdownMenuItem(text = {
-                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text(option.nativeName, style = MaterialTheme.typography.titleMedium)
-                        Text(option.settingsTitle, style = MaterialTheme.typography.bodySmall, color = MuralColors.Secondary)
-                    }
-                }, onClick = { onSelect(option.id); close() }, modifier = Modifier.testTag("onboarding-language-${option.id}"),
-                    trailingIcon = if (selected == option.id) ({ MuralIcon(MuralSymbol.Check, color = MuralColors.Secondary) }) else null)
-            }
-        }
+private fun StepTitle(text: String, tag: String) {
+    Text(text, style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center,
+        modifier = Modifier.semantics { heading() }.testTag(tag))
+}
+
+@Composable
+private fun NameStep(name: String, compact: Boolean, onChange: (String) -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(if (compact) 14.dp else 22.dp)) {
+        StepTitle(stringResource(R.string.onboarding_name_title), "onboarding-name-title")
+        MuralTextField(name, { onChange(it.take(20)) }, Modifier.fillMaxWidth().testTag("onboarding-name"), singleLine = true,
+            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
+            label = { Text(stringResource(R.string.onboarding_name_label)) })
     }
 }
 
 @Composable
-private fun MeaningStep(language: LanguageModule, selected: String, compact: Boolean, onSelect: (String) -> Unit) {
+private fun HeadphonesStep(compact: Boolean) {
+    val context = LocalContext.current
+    val demo = remember { PanDemo(context) }
+    DisposableEffect(demo) { onDispose { demo.close() } }
+    val scope = rememberCoroutineScope()
+    var position by remember { mutableFloatStateOf(.5f) }
+    var playing by rememberSaveable { mutableStateOf(false) }
     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(if (compact) 12.dp else 20.dp)) {
-        Text(stringResource(R.string.onboarding_meaning_title), style = MaterialTheme.typography.headlineSmall,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            modifier = Modifier.semantics { heading() }.testTag("onboarding-meaning-title"))
-        Text(stringResource(R.string.onboarding_meaning_subtitle, language.name), style = MaterialTheme.typography.bodyMedium,
-            color = MuralColors.Secondary, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-        LanguageDropdown(selected, stringResource(R.string.onboarding_subtitle_language), "onboarding-meaning-picker") { close ->
-            MeaningLanguages.all.forEach { name ->
-                androidx.compose.material3.DropdownMenuItem(text = { Text(name) }, onClick = { onSelect(name); close() },
-                    modifier = Modifier.testTag("meaning-$name"),
-                    trailingIcon = if (selected == name) ({ MuralIcon(MuralSymbol.Check, color = MuralColors.Secondary) }) else null)
+        StepTitle(stringResource(R.string.onboarding_phones_title), "onboarding-phones-title")
+        Text(stringResource(R.string.onboarding_phones_body), style = MaterialTheme.typography.bodyMedium, color = MuralColors.Secondary, textAlign = TextAlign.Center)
+        PanBar(position)
+        OutlinedButton(onClick = {
+            playing = true
+            scope.launch {
+                demo.play { position = it }
+                position = .5f
+                playing = false
             }
+        }, enabled = !playing, shape = CircleShape, modifier = Modifier.heightIn(min = 52.dp).testTag("onboarding-phones-play")) {
+            Text(stringResource(if (playing) R.string.onboarding_phones_playing else R.string.onboarding_phones_play))
         }
-        if (compact && LocalDensity.current.fontScale <= 1.3f) {
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                Text(language.greeting, style = MaterialTheme.typography.titleMedium)
-                Text(MeaningLanguages.greeting(selected), style = MaterialTheme.typography.bodyMedium,
-                    color = MuralColors.Secondary, modifier = Modifier.testTag("onboarding-meaning-example"))
+    }
+}
+
+/** A bar from "L" to "R" with a dot that follows the sound, so what you hear and what you see agree. */
+@Composable
+private fun PanBar(position: Float) {
+    BoxWithConstraints(Modifier.fillMaxWidth().height(56.dp).clip(RoundedCornerShape(28.dp)).background(Color.White.copy(alpha = .78f))
+        .border(1.dp, Color.White.copy(alpha = .9f), RoundedCornerShape(28.dp)).testTag("onboarding-pan-bar")) {
+        Row(Modifier.fillMaxSize().padding(horizontal = 22.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(stringResource(R.string.onboarding_pan_left), style = MaterialTheme.typography.labelLarge, color = MuralColors.Secondary)
+            Spacer(Modifier.weight(1f))
+            Text(stringResource(R.string.onboarding_pan_right), style = MaterialTheme.typography.labelLarge, color = MuralColors.Secondary)
+        }
+        val travel = maxWidth - 28.dp - 24.dp
+        Box(Modifier.align(Alignment.CenterStart).offset(x = 12.dp + travel * position).size(28.dp).background(MuralColors.Orange, CircleShape))
+    }
+}
+
+@Composable
+private fun TastesStep(likes: List<String>, compact: Boolean, onChange: (List<String>) -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(if (compact) 10.dp else 16.dp)) {
+        StepTitle(stringResource(R.string.onboarding_tastes_title), "onboarding-tastes-title")
+        Text(stringResource(R.string.onboarding_tastes_body), style = MaterialTheme.typography.bodyMedium, color = MuralColors.Secondary, textAlign = TextAlign.Center)
+        listOf(
+            Triple(TouchBehavior.Scrub, MuralSymbol.Wave, R.string.onboarding_taste_slide_body),
+            Triple(TouchBehavior.Tap, MuralSymbol.Sparkles, R.string.onboarding_taste_tap_body),
+            Triple(TouchBehavior.Hold, MuralSymbol.Leaf, R.string.onboarding_taste_ambient_body),
+        ).forEachIndexed { index, (behavior, symbol, body) ->
+            val selected = behavior.name in likes
+            Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(if (selected) MuralColors.Panels[index] else Color.White.copy(alpha = .78f))
+                .border(if (selected) 2.dp else 1.dp, if (selected) MuralColors.Orange else Color.White.copy(alpha = .9f), RoundedCornerShape(24.dp))
+                .clickable(role = Role.Checkbox) { onChange(if (selected) likes - behavior.name else likes + behavior.name) }
+                .testTag("onboarding-taste-${behavior.name.lowercase()}").padding(horizontal = 20.dp, vertical = 16.dp),
+                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                MuralIcon(symbol, Modifier.size(26.dp))
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Text(stringResource(categoryFor(behavior)), style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(body), style = MaterialTheme.typography.bodySmall, color = MuralColors.Secondary)
+                }
+                if (selected) MuralIcon(MuralSymbol.Check, Modifier.size(22.dp))
             }
-        } else Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(5.dp),
-            modifier = Modifier.padding(top = 4.dp)) {
-            Text(language.greeting, style = MaterialTheme.typography.titleLarge)
-            Text(MeaningLanguages.greeting(selected), style = MaterialTheme.typography.bodyLarge,
-                color = MuralColors.Secondary, modifier = Modifier.testTag("onboarding-meaning-example"))
         }
     }
 }
 
 @Composable
-private fun LanguageDropdown(title: String, subtitle: String, tag: String,
-                             options: @Composable androidx.compose.foundation.layout.ColumnScope.(close: () -> Unit) -> Unit) {
-    var expanded by rememberSaveable { mutableStateOf(false) }
-    Box(Modifier.fillMaxWidth()) {
-        Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(Color.White.copy(alpha = .78f))
-            .border(1.dp, Color.White.copy(alpha = .9f), RoundedCornerShape(24.dp))
-            .clickable(role = Role.Button) { expanded = true }.testTag(tag).padding(horizontal = 22.dp, vertical = 19.dp),
-            verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                Text(title, style = MaterialTheme.typography.titleLarge)
-                Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MuralColors.Secondary)
-            }
-            MuralIcon(MuralSymbol.ChevronDown, color = MuralColors.Secondary)
-        }
-        androidx.compose.material3.DropdownMenu(expanded, onDismissRequest = { expanded = false },
-            modifier = Modifier.heightIn(max = 360.dp).widthIn(min = 280.dp),
-            shape = RoundedCornerShape(24.dp), containerColor = MuralColors.CreamRaised) {
-            options { expanded = false }
-        }
-    }
-}
-
-@Composable
-fun AIConsentDialog(onAgree: () -> Unit, onDecline: () -> Unit) {
-    val uriHandler = LocalUriHandler.current
-    Dialog(
-        onDismissRequest = {},
-        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false, usePlatformDefaultWidth = false),
-    ) {
-        Surface(Modifier.fillMaxSize(), color = MuralColors.Cream) {
-            Column(
-                Modifier
-                    .windowInsetsPadding(WindowInsets.safeDrawing)
-                    .verticalScroll(rememberScrollState())
-                    .padding(28.dp),
-                verticalArrangement = Arrangement.spacedBy(22.dp),
-            ) {
-                MuralIcon(MuralSymbol.Wave, Modifier.size(40.dp), color = MuralColors.Secondary)
-                Text(
-                    stringResource(R.string.consent_title),
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.semantics { heading() }.testTag("ai-consent-title"),
-                )
-                Text(
-                    stringResource(R.string.consent_ai_summary),
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-                Text(
-                    stringResource(R.string.consent_local_storage_note),
-                    color = MuralColors.Secondary,
-                )
-                Text(
-                    stringResource(R.string.consent_privacy_policy_link),
-                    color = MuralColors.Orange,
-                    modifier = Modifier.clickable { uriHandler.openUri("https://mural.chat/privacy/") }.padding(vertical = 8.dp),
-                )
-                Text(stringResource(R.string.consent_adult_confirmation), style = MaterialTheme.typography.bodySmall,
-                    color = MuralColors.Secondary, modifier = Modifier.testTag("adult-confirmation"))
-                Spacer(Modifier.height(12.dp))
-                Button(
-                    onClick = onAgree,
-                    modifier = Modifier.fillMaxWidth().height(56.dp).testTag("ai-consent-agree"),
-                    colors = ButtonDefaults.buttonColors(containerColor = MuralColors.Orange, contentColor = MuralColors.Ink),
-                ) { Text(stringResource(R.string.consent_agree_button)) }
-                OutlinedButton(onClick = onDecline, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("ai-consent-decline")) { Text(stringResource(R.string.consent_decline_button)) }
-            }
+private fun MicrophoneStep(compact: Boolean) {
+    val context = LocalContext.current
+    var allowed by remember { mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) }
+    val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { allowed = it }
+    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(if (compact) 12.dp else 20.dp)) {
+        StepTitle(stringResource(R.string.onboarding_mic_title), "onboarding-mic-title")
+        Text(stringResource(R.string.onboarding_mic_body), style = MaterialTheme.typography.bodyMedium, color = MuralColors.Secondary, textAlign = TextAlign.Center)
+        MuralIcon(if (allowed) MuralSymbol.Mic else MuralSymbol.MicOff, Modifier.size(40.dp), color = if (allowed) MuralColors.Orange else MuralColors.Secondary)
+        OutlinedButton(onClick = { ask.launch(Manifest.permission.RECORD_AUDIO) }, enabled = !allowed, shape = CircleShape,
+            modifier = Modifier.heightIn(min = 52.dp).testTag("onboarding-mic-allow")) {
+            Text(stringResource(if (allowed) R.string.onboarding_mic_allowed else R.string.onboarding_mic_allow))
         }
     }
 }

@@ -1,0 +1,10 @@
+<resources>
+    <string name="common_ok">OK</string>
+    <string name="common_cancel">Cancelar</string>
+    <string name="common_close">Fechar</string>
+    <string name="words_recall_bars_desc">%1$d de 3 barras de memória</string>
+    <string name="settings_tab_title">Ajustes</string>
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_open_source_notices">Avisos de código aberto</string>
+    <string name="settings_app_version_footer">Mural %1$s · Android</string>
+</resources>

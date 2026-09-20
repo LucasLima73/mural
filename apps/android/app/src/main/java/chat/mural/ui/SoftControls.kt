@@ -48,17 +48,17 @@ fun SoftRoundButton(symbol: MuralSymbol, description: String, onClick: () -> Uni
     }
 }
 
+/** One tab of the bottom navigation. */
+data class NavTab(val title: Int, val symbol: MuralSymbol, val tag: String)
+
 @Composable
-fun FloatingNavigation(selected: Int, onSelect: (Int) -> Unit) {
-    val items = listOf(Triple(R.string.talk_tab_title, MuralSymbol.Wave, "tab-talk"),
-        Triple(R.string.topics_tab_title, MuralSymbol.Themes, "tab-topics"),
-        Triple(R.string.words_tab_title, MuralSymbol.Words, "tab-words"))
+fun FloatingNavigation(items: List<NavTab>, selected: Int, onSelect: (Int) -> Unit) {
     Box(Modifier.fillMaxWidth().navigationBarsPadding().padding(top = 8.dp, bottom = 12.dp), contentAlignment = Alignment.Center) {
-        BoxWithConstraints(Modifier.widthIn(max = 304.dp).fillMaxWidth().height(66.dp).testTag("floating-navigation")
+        BoxWithConstraints(Modifier.widthIn(max = 100.dp * items.size + 8.dp).fillMaxWidth().height(66.dp).testTag("floating-navigation")
             .shadow(25.dp, CircleShape, ambientColor = MuralColors.Secondary.copy(alpha = .08f), spotColor = MuralColors.Secondary.copy(alpha = .10f))
             .background(Color(0xFFFDFCF3).copy(alpha = .94f), CircleShape)
             .border(1.5.dp, Color.White.copy(alpha = .85f), CircleShape).padding(4.dp).selectableGroup()) {
-            val width = maxWidth / 3
+            val width = maxWidth / items.size
             val offset by animateDpAsState(width * selected, spring(dampingRatio = .88f, stiffness = 350f), label = "tab position")
             Box(Modifier.offset(x = offset).width(width).fillMaxHeight().background(Color(0xFFEDEBDD), CircleShape))
             Row(Modifier.fillMaxSize()) {

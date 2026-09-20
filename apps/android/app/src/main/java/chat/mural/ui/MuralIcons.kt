@@ -18,7 +18,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 
 enum class MuralSymbol { Wave, Themes, Words, Settings, Mic, MicOff, Captions, Transcript, End,
-    Keyboard, Sparkles, ArrowUp, ChevronDown, Back, Search, Close, Check, Leaf, ChevronRight, Coffee, Globe, Sun, Food, Music }
+    Keyboard, Sparkles, ArrowUp, ChevronDown, Back, Search, Close, Check, Leaf, ChevronRight, Coffee, Globe, Sun, Food, Music, Pads, Home }
 
 /** Original, consistently weighted artwork; no platform-dependent text glyphs. */
 @Composable
@@ -86,6 +86,11 @@ fun MuralIcon(symbol: MuralSymbol, modifier: Modifier = Modifier, color: Color =
                     line(12f,2f,12f,5f); line(3f,6f,5f,8f); line(19f,8f,21f,6f); line(1f,13f,3f,13f); line(21f,13f,23f,13f) }
                 MuralSymbol.Food -> { line(6f,3f,6f,21f); line(3f,3f,3f,8f); line(9f,3f,9f,8f)
                     path { moveTo(3f,8f); quadraticTo(6f,13f,9f,8f) }; path { moveTo(19f,21f); lineTo(19f,3f); cubicTo(12f,8f,14f,14f,19f,14f) } }
+                MuralSymbol.Home -> { path { moveTo(3f,11f); lineTo(12f,3.5f); lineTo(21f,11f) }
+                    path { moveTo(5.5f,9.5f); lineTo(5.5f,20f); lineTo(18.5f,20f); lineTo(18.5f,9.5f) }
+                    path { moveTo(10f,20f); lineTo(10f,14f); lineTo(14f,14f); lineTo(14f,20f) } }
+                MuralSymbol.Pads -> { drawCircle(color, 2.6f, Offset(12f,12f)); drawCircle(color, 6.8f, Offset(12f,12f), style = stroke)
+                    drawCircle(color, 10.2f, Offset(12f,12f), style = stroke) }
                 MuralSymbol.Music -> { path { moveTo(9f,18f); lineTo(9f,5f); lineTo(21f,2f); lineTo(21f,15f) }
                     drawOval(color,Offset(3f,16f),Size(6f,5f)); drawOval(color,Offset(15f,13f),Size(6f,5f)); line(9f,9f,21f,6f) }
             }

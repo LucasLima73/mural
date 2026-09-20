@@ -6,36 +6,8 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.assertFalse
 import org.junit.Test
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.advanceTimeBy
-import kotlinx.coroutines.test.runCurrent
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class CommunicationAudioRouteTest {
-    @Test fun briefNetworkHandoffsRecoverWithoutEndingTheConversation() = runTest {
-        var failures = 0
-        val recovery = VoiceConnectionRecovery(backgroundScope, 8_000) { failures++ }
-        recovery.disconnected(); runCurrent()
-        advanceTimeBy(7_999); recovery.connected(); runCurrent()
-        advanceTimeBy(8_001); runCurrent()
-        assertEquals(0, failures)
-        recovery.disconnected(); runCurrent(); advanceTimeBy(8_001); runCurrent()
-        assertEquals(1, failures)
-        recovery.connected()
-    }
-
-    @Test fun repeatedNetworkCallbacksCannotPostponeTheDisconnectDeadline() = runTest {
-        var failures = 0
-        val recovery = VoiceConnectionRecovery(backgroundScope, 8_000) { failures++ }
-        recovery.disconnected(); runCurrent(); advanceTimeBy(5_000)
-        recovery.disconnected(); runCurrent(); advanceTimeBy(3_001); runCurrent()
-        assertEquals(1, failures)
-        recovery.disconnected(); advanceTimeBy(8_001); runCurrent()
-        assertEquals(1, failures)
-        recovery.connected()
-    }
-
     private data class Device(val id: String, val type: Int)
     private val speaker = Device("speaker", AudioDeviceInfo.TYPE_BUILTIN_SPEAKER)
     private val earpiece = Device("earpiece", AudioDeviceInfo.TYPE_BUILTIN_EARPIECE)

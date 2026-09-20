@@ -1,0 +1,21 @@
+<resources>
+    <string name="home_greeting_morning">Buenos días</string>
+    <string name="home_greeting_afternoon">Buenas tardes</string>
+    <string name="home_greeting_evening">Buenas noches</string>
+    <string name="home_greeting_night">Buenas noches</string>
+    <string name="home_subtitle">¿Qué sonidos te apetecen hoy?</string>
+    <string name="home_solo_title">Empieza a jugar</string>
+    <string name="home_solo_body">Abre los pads y prueba todos los sonidos tú solo.</string>
+    <string name="home_friend_title">Juega con un amigo</string>
+    <string name="home_friend_body">Crea una sala y comparte el código. Los dos oís cada toque al momento.</string>
+    <string name="home_collections">Colecciones de sonidos</string>
+    <string name="home_collection_count">%1$d sonidos</string>
+    <string name="home_tip">Mejor con auriculares. Desliza, toca o mantén para encontrar lo que te gusta.</string>
+    <string name="pads_solo_label">Jugando solo</string>
+    <string name="rooms_join_short">Entrar</string>
+    <string name="home_for_you">Para ti</string>
+    <string name="tab_home">Inicio</string>
+    <string name="tab_pads">Pads</string>
+    <string name="home_in_room">Estás en la sala</string>
+    <string name="home_open_pads">Abrir pads</string>
+</resources>

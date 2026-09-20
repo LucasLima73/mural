@@ -3,6 +3,7 @@
     <string name="minute_purchases_intro">Sigue practicando, conversación a conversación.</string>
     <plurals name="minute_purchases_pack_minutes">
         <item quantity="one">%1$s minuto</item>
+        <item quantity="many">%1$s minutos</item>
         <item quantity="other">%1$s minutos</item>
     </plurals>
     <string name="minute_purchases_pack_action">Añadir %1$s por %2$s</string>

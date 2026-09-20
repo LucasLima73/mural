@@ -15,7 +15,6 @@ class AccountRotationTest {
 
     @Test fun accountSettlementAndItsBusyGuardSurviveActivityRecreation() {
         assertEquals("chat.mural.android.uitest", compose.activity.packageName)
-        compose.awaitHistoryLoaded()
         val account = compose.runOnUiThread { ViewModelProvider(compose.activity)[AccountViewModel::class.java] }
         val settled = CompletableDeferred<Boolean>()
         var completions = 0

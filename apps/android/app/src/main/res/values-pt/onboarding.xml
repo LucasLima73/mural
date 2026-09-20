@@ -1,0 +1,26 @@
+<resources>
+    <string name="onboarding_back">Voltar</string>
+    <string name="onboarding_continue_button">Continuar</string>
+    <string name="onboarding_start_button">Começar</string>
+    <string name="onboarding_name_title">Como podemos\nchamar você?</string>
+    <string name="onboarding_name_label">Seu nome</string>
+    <string name="onboarding_name_note">Seus amigos veem esse nome nas suas salas.</string>
+    <string name="onboarding_phones_title">Coloque os\nfones de ouvido</string>
+    <string name="onboarding_phones_body">Toque um som e escute. Ele deve ir do seu ouvido esquerdo ao direito, e voltar.</string>
+    <string name="onboarding_phones_play">Tocar som</string>
+    <string name="onboarding_phones_playing">Ouvindo…</string>
+    <string name="onboarding_phones_note">Ouvindo só de um lado? Verifique se os fones estão conectados.</string>
+    <string name="onboarding_tastes_title">O que você quer\nouvir?</string>
+    <string name="onboarding_tastes_body">Escolha quantos quiser. Começamos por aí.</string>
+    <string name="onboarding_taste_slide_body">Escovas, papel, lápis. O som acompanha seu dedo.</string>
+    <string name="onboarding_taste_tap_body">Teclas, moedas, gotas. Um toque, um som.</string>
+    <string name="onboarding_taste_ambient_body">Chuva, fogo, ondas. Uma cena que continua tocando.</string>
+    <string name="onboarding_tastes_note">Você pode explorar tudo depois.</string>
+    <string name="onboarding_mic_title">Converse enquanto\nvocê brinca</string>
+    <string name="onboarding_mic_body">O chat de voz permite falar com um amigo na sua sala. Ele usa o microfone só enquanto a voz está ligada.</string>
+    <string name="onboarding_mic_allow">Permitir microfone</string>
+    <string name="onboarding_mic_allowed">Microfone permitido</string>
+    <string name="onboarding_mic_note">Agora não? A voz vai pedir quando você ligá-la.</string>
+    <string name="onboarding_pan_left">E</string>
+    <string name="onboarding_pan_right">D</string>
+</resources>

@@ -1,0 +1,31 @@
+<resources>
+    <string name="rooms_create">Create room</string>
+    <string name="rooms_join">Join with code</string>
+    <string name="rooms_create_title">Create a room</string>
+    <string name="rooms_join_title">Join a room</string>
+    <string name="rooms_create_confirm">Create</string>
+    <string name="rooms_join_confirm">Join</string>
+    <string name="rooms_name_label">Your name</string>
+    <string name="rooms_code_label">Room code</string>
+    <string name="rooms_code_hint">6 letters and numbers</string>
+    <string name="rooms_status_connecting">Connecting…</string>
+    <string name="rooms_status_waiting">Waiting for a friend…</string>
+    <string name="rooms_status_with">With %1$s</string>
+    <string name="rooms_share">Share</string>
+    <string name="rooms_share_message">Join my room with this code: %1$s</string>
+    <string name="rooms_chat">Chat</string>
+    <string name="rooms_chat_empty">Say hello.</string>
+    <string name="rooms_chat_field">Message</string>
+    <string name="rooms_chat_send">Send</string>
+    <string name="rooms_leave">Leave room</string>
+    <string name="rooms_lost">Connection lost</string>
+    <string name="rooms_rejoin">Rejoin</string>
+    <string name="rooms_failure_not_found">That room doesn\'t exist or has closed. Check the code.</string>
+    <string name="rooms_failure_full">That room is full.</string>
+    <string name="rooms_failure_busy">The server is busy. Try again in a moment.</string>
+    <string name="rooms_failure_rate_limited">Too many tries. Wait a minute and try again.</string>
+    <string name="rooms_failure_offline">Couldn\'t reach the room server. Check your connection.</string>
+    <string name="rooms_failure_unavailable">Rooms aren\'t set up in this build.</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_footer">Mural uses your phone\'s language. You can change it for this app in your phone\'s settings.</string>
+</resources>

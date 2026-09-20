@@ -127,11 +127,13 @@ fun Brand(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun PageHeading(eyebrow: String, title: String, subtitle: String = "", modifier: Modifier = Modifier) {
-    androidx.compose.foundation.layout.Column(modifier, verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(eyebrow.uppercase(), style = MaterialTheme.typography.labelSmall, color = MuralColors.Secondary, letterSpacing = 1.5.sp)
-        Text(title, style = MaterialTheme.typography.headlineLarge)
-        if (subtitle.isNotBlank()) Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = MuralColors.Secondary)
+fun PageHeading(eyebrow: String, title: String, subtitle: String = "", modifier: Modifier = Modifier, centered: Boolean = false) {
+    val align = if (centered) androidx.compose.ui.text.style.TextAlign.Center else androidx.compose.ui.text.style.TextAlign.Start
+    androidx.compose.foundation.layout.Column(modifier, verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalAlignment = if (centered) Alignment.CenterHorizontally else Alignment.Start) {
+        Text(eyebrow.uppercase(), style = MaterialTheme.typography.labelSmall, color = MuralColors.Secondary, letterSpacing = 1.5.sp, textAlign = align)
+        Text(title, style = MaterialTheme.typography.headlineLarge, textAlign = align)
+        if (subtitle.isNotBlank()) Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = MuralColors.Secondary, textAlign = align)
     }
 }
 

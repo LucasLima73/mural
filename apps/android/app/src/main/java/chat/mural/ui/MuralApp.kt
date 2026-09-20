@@ -1,37 +1,27 @@
 package chat.mural.ui
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.background
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -40,27 +30,39 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import chat.mural.MuralViewModel
-import chat.mural.R
-import chat.mural.core.CloudAction
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import chat.mural.AccountViewModel
 import chat.mural.MinutePurchaseViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import chat.mural.R
+import chat.mural.RoomViewModel
+import chat.mural.core.RoomFailure
+import chat.mural.core.RoomStatus
+import chat.mural.core.TouchBehavior
 
+private const val PADS_TAB = 2
+
+private val TABS = listOf(
+    NavTab(R.string.tab_home, MuralSymbol.Home, "tab-home"),
+    NavTab(R.string.tab_play, MuralSymbol.Sparkles, "tab-play"),
+    NavTab(R.string.tab_pads, MuralSymbol.Pads, "tab-pads"),
+)
+
+/**
+ * The welcome screens on first run, then three tabs: Home, Play (the satisfying toys) and Pads, which play on your
+ * own or with a friend in a room. The settings gear opens account and notices from either tab.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MuralApp(
-    vm: MuralViewModel,
-    microphoneMessage: String?,
-    onRequestMicrophone: () -> Unit,
-    onOpenAppSettings: (() -> Unit)?,
-    onExport: () -> Unit,
-    onImport: () -> Unit,
+    rooms: RoomViewModel,
+    welcomed: Boolean = true,
+    likes: List<TouchBehavior> = emptyList(),
+    onWelcomed: (name: String, likes: List<TouchBehavior>) -> Unit = { _, _ -> },
     account: AccountViewModel? = null,
     onGoogleSignIn: () -> Unit = {},
     onSignOut: () -> Unit = {},
@@ -69,52 +71,31 @@ fun MuralApp(
     purchases: MinutePurchaseViewModel? = null,
     onBuyMinutes: (String) -> Unit = {},
 ) {
-    val reportState by vm.reportState.collectAsStateWithLifecycle()
-    val prefs = vm.archive.preferences
+    val room by rooms.state.collectAsStateWithLifecycle()
+    var done by rememberSaveable { mutableStateOf(welcomed) }
     var tab by rememberSaveable { mutableIntStateOf(0) }
-    var showConsent by rememberSaveable { mutableStateOf(false) }
     var showAccount by rememberSaveable { mutableStateOf(false) }
     var showSettings by rememberSaveable { mutableStateOf(false) }
     var showMinutes by rememberSaveable { mutableStateOf(false) }
-    BackHandler(enabled = tab != 0 && !showSettings && !showAccount && !showMinutes) { tab = 0 }
-    fun perform(action: CloudAction) {
-        when (action) {
-            CloudAction.StartVoice -> if (!vm.needsMinuteAccess()) onRequestMicrophone()
-            is CloudAction.SendTyped -> vm.sendTyped(action.text)
-            is CloudAction.Lookup -> vm.lookup(action.word, action.sentence)
-            is CloudAction.CurrentTopic -> vm.currentTopic(action.query)
-            CloudAction.Help -> vm.help()
-        }
-    }
-    fun withConsent(action: CloudAction) {
-        if (vm.archive.preferences.aiConsentVersion == AI_CONSENT_VERSION) perform(action)
-        else {
-            vm.pendingCloudAction = action
-            showConsent = true
-        }
+    val joined = room.status == RoomStatus.InRoom
+    // A dropped connection keeps you in the room, so you can rejoin it; every other failure means you are not in one.
+    val inRoom = joined || (room.status == RoomStatus.Failed && room.failure == RoomFailure.Lost)
+    var padCategory by rememberSaveable { mutableStateOf(likes.firstOrNull() ?: TouchBehavior.Scrub) }
+    // Joining a room takes you to the pads to play; nothing ever moves you away from a tab you chose.
+    var wasJoined by rememberSaveable { mutableStateOf(joined) }
+    LaunchedEffect(joined) {
+        if (joined && !wasJoined) tab = PADS_TAB
+        wasJoined = joined
     }
 
     MuralTheme {
         Surface(Modifier.fillMaxSize(), color = MuralColors.Cream) {
-            if (vm.loadingHistory) {
-                Box(Modifier.fillMaxSize().testTag("history-loading"), contentAlignment = Alignment.Center) {
-                    SoftAnimatedBackground(Modifier.fillMaxSize())
-                    MuralOrb(modifier = Modifier.size(150.dp))
-                }
-            } else if (!prefs.hasOnboarded) {
-                OnboardingScreen(prefs.learningLanguageID, prefs.meaningLanguage) { language, meaning ->
-                    vm.selectLanguage(language)
-                    vm.updatePreferences(
-                        vm.archive.preferences.copy(
-                            learningLanguageID = language,
-                            meaningLanguage = meaning,
-                            meaningVisible = true,
-                            hasOnboarded = true,
-                            aiConsentVersion = null,
-                        ),
-                    )
-                    vm.pendingCloudAction = null
-                    showConsent = true
+            if (!done) {
+                OnboardingScreen(initialName = rooms.name) { name, picked ->
+                    onWelcomed(name, picked)
+                    // The pads open on the first kind of sound the person said they like.
+                    picked.firstOrNull()?.let { padCategory = it }
+                    done = true
                 }
             } else {
                 Scaffold(
@@ -133,29 +114,16 @@ fun MuralApp(
                     },
                 ) { padding ->
                     Box(Modifier.fillMaxSize().padding(padding)) {
-                    Column(Modifier.fillMaxSize().then(if (tab == 0) Modifier.padding(bottom =
-                        90.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()) else Modifier)) {
-                        when (tab) {
-                            0 -> TalkScreen(
-                                vm = vm,
-                                microphoneMessage = microphoneMessage,
-                                onMicrophone = { withConsent(CloudAction.StartVoice) },
-                                onOpenAppSettings = onOpenAppSettings,
-                                onSendTyped = { text -> withConsent(CloudAction.SendTyped(text)) },
-                                onLookup = { word, sentence -> withConsent(CloudAction.Lookup(word, sentence)) },
-                                onHelp = { withConsent(CloudAction.Help) },
-                            )
-                            1 -> TopicsScreen(
-                                vm,
-                                onChoose = { tab = 0 },
-                                onCurrentTopic = { query -> withConsent(CloudAction.CurrentTopic(query)) },
-                            )
-                            2 -> WordsScreen(vm)
+                        Column(Modifier.fillMaxSize().padding(bottom = 90.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())) {
+                            when (tab) {
+                                0 -> HomeScreen(rooms, likes, onOpenPads = { tab = PADS_TAB }, onOpenCategory = { padCategory = it; tab = PADS_TAB })
+                                1 -> PlayScreen()
+                                else -> PadsScreen(rooms, padCategory, onCategory = { padCategory = it })
+                            }
                         }
-                    }
-                    Box(Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(108.dp)
-                        .background(Brush.verticalGradient(listOf(Color.Transparent, MuralColors.Cream.copy(alpha = .92f)))))
-                    Box(Modifier.align(Alignment.BottomCenter)) { FloatingNavigation(tab) { tab = it } }
+                        Box(Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(108.dp)
+                            .background(Brush.verticalGradient(listOf(Color.Transparent, MuralColors.Cream.copy(alpha = .92f)))))
+                        Box(Modifier.align(Alignment.BottomCenter)) { FloatingNavigation(TABS, tab) { tab = it } }
                     }
                 }
             }
@@ -164,56 +132,19 @@ fun MuralApp(
                 ModalBottomSheet(onDismissRequest = { showSettings = false }, containerColor = MuralColors.Cream,
                     sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
                     Column(Modifier.fillMaxHeight(.94f)) {
-                        SettingsScreen(vm, onExport, onImport, onReviewConsent = {
-                            vm.pendingCloudAction = null; showConsent = true
-                        }, onAccount = if (account?.configuration != null) ({
+                        SettingsScreen(onAccount = if (account?.configuration != null) ({
                             account.refresh(); showAccount = true
                         }) else null, onDismiss = { showSettings = false })
                     }
                 }
             }
 
-            if (showConsent) AIConsentDialog(
-                onAgree = {
-                    vm.updatePreferences(vm.archive.preferences.copy(aiConsentVersion = AI_CONSENT_VERSION))
-                    showConsent = false
-                    val action = vm.pendingCloudAction
-                    vm.pendingCloudAction = null
-                    action?.let(::perform)
-                },
-                onDecline = {
-                    showConsent = false
-                    vm.pendingCloudAction = null
-                },
-            )
-
-            if (vm.showMinuteAccess && !showAccount && !showSettings && !showMinutes) {
-                val memberState = account?.state?.collectAsStateWithLifecycle()?.value
-                GuestMinutesSheet(vm.guestState, memberState?.signedIn == true,
-                    memberRemaining = memberState?.minutes?.availableMilliseconds,
-                    busy = accountTransitionBusy || memberState?.busy == true || vm.hostedReadiness.checking,
-                    ready = vm.hostedReadiness.ready, onContinue = {
-                        vm.dismissMinuteAccess(); onRequestMicrophone()
-                    }, onSignIn = if (account?.configuration != null) ({
-                        vm.dismissMinuteAccess(); showAccount = true; onGoogleSignIn()
-                    }) else null,
-                    onBuy = if (purchases?.enabled == true) ({
-                        vm.dismissMinuteAccess(); purchases.refresh(); showMinutes = true
-                    }) else null,
-                    onRetry = vm::refreshHostedReadiness,
-                    onSettings = { vm.dismissMinuteAccess(); showSettings = true }, onDismiss = vm::dismissMinuteAccess)
-            }
-
             if (showAccount && !showMinutes && account?.configuration != null) {
                 val accountState by account.state.collectAsStateWithLifecycle()
                 AccountSheet(accountState, onDismiss = { showAccount = false }, onSignIn = onGoogleSignIn,
                     onSignOut = onSignOut, onDelete = onDeleteAccount, onRefresh = account::refresh,
-                    transitionBusy = accountTransitionBusy, provider = vm.conversationProvider,
-                    hostedAvailable = vm.hostedReadiness.enabled, conversationRunning = vm.isRunning,
-                    onSelectProvider = vm::selectConversationProvider,
-                    onBuyMinutes = if (purchases?.enabled == true) ({ purchases.refresh(); showMinutes = true }) else null,
-                    guestMinutes = vm.guestState.takeIf { it.status == chat.mural.core.GuestMinuteStatus.READY }?.remainingMilliseconds,
-                    memberAlreadyClaimedTrial = vm.guestState.status == chat.mural.core.GuestMinuteStatus.MEMBER_TRIAL_USED)
+                    transitionBusy = accountTransitionBusy,
+                    onBuyMinutes = if (purchases?.enabled == true) ({ purchases.refresh(); showMinutes = true }) else null)
             }
             if (showMinutes && purchases?.enabled == true && account != null) {
                 val purchaseState by purchases.state.collectAsStateWithLifecycle()
@@ -222,30 +153,6 @@ fun MuralApp(
                     onSignIn = onGoogleSignIn, onRefresh = purchases::refresh,
                     onDismiss = { showMinutes = false; account.refresh() },
                     accountBusy = accountTransitionBusy || accountState.busy)
-            }
-
-            reportState.selection?.let { selected ->
-                androidx.compose.runtime.key(reportState.generation) {
-                    ReportConversationSheet(selected.excerpt, selected.languageID, reportState.available,
-                        reportState.delivery, vm::submitReport, vm::dismissReport,
-                        java.util.Locale.getDefault().language)
-                }
-            }
-
-            vm.error?.let { message ->
-                AlertDialog(
-                    onDismissRequest = vm::dismissError,
-                    title = { Text(stringResource(R.string.error_dialog_title)) },
-                    text = { Text(message) },
-                    confirmButton = { MuralTextButton(onClick = vm::dismissError) { Text(stringResource(R.string.common_ok)) } },
-                    dismissButton = if (vm.errorNeedsKeySetup) ({
-                        MuralTextButton(onClick = { vm.dismissError(); showSettings = true }) { Text(stringResource(R.string.error_go_to_settings)) }
-                    }) else if (vm.errorNeedsAccountSignIn && account?.configuration != null) ({
-                        MuralTextButton(onClick = { vm.dismissError(); account.refresh(); showAccount = true }) {
-                            Text(stringResource(R.string.account_title))
-                        }
-                    }) else null,
-                )
             }
         }
     }

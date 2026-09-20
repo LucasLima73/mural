@@ -1,0 +1,31 @@
+<resources>
+    <string name="rooms_create">Criar sala</string>
+    <string name="rooms_join">Entrar com código</string>
+    <string name="rooms_create_title">Criar uma sala</string>
+    <string name="rooms_join_title">Entrar numa sala</string>
+    <string name="rooms_create_confirm">Criar</string>
+    <string name="rooms_join_confirm">Entrar</string>
+    <string name="rooms_name_label">Seu nome</string>
+    <string name="rooms_code_label">Código da sala</string>
+    <string name="rooms_code_hint">6 letras e números</string>
+    <string name="rooms_status_connecting">Conectando…</string>
+    <string name="rooms_status_waiting">Esperando um amigo…</string>
+    <string name="rooms_status_with">Com %1$s</string>
+    <string name="rooms_share">Compartilhar</string>
+    <string name="rooms_share_message">Entre na minha sala com este código: %1$s</string>
+    <string name="rooms_chat">Chat</string>
+    <string name="rooms_chat_empty">Diga oi.</string>
+    <string name="rooms_chat_field">Mensagem</string>
+    <string name="rooms_chat_send">Enviar</string>
+    <string name="rooms_leave">Sair da sala</string>
+    <string name="rooms_lost">Conexão perdida</string>
+    <string name="rooms_rejoin">Reentrar</string>
+    <string name="rooms_failure_not_found">Essa sala não existe ou já fechou. Confira o código.</string>
+    <string name="rooms_failure_full">Essa sala está cheia.</string>
+    <string name="rooms_failure_busy">O servidor está ocupado. Tente de novo daqui a pouco.</string>
+    <string name="rooms_failure_rate_limited">Tentativas demais. Espere um minuto e tente de novo.</string>
+    <string name="rooms_failure_offline">Não foi possível falar com o servidor de salas. Verifique sua conexão.</string>
+    <string name="rooms_failure_unavailable">As salas não estão configuradas nesta versão.</string>
+    <string name="settings_language">Idioma</string>
+    <string name="settings_language_footer">O Mural usa o idioma do seu celular. Você pode mudá-lo só para este app nos ajustes do celular.</string>
+</resources>

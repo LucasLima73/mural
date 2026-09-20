@@ -13,7 +13,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import chat.mural.core.AccountState
 import chat.mural.core.AccountNotice
-import chat.mural.core.ConversationProvider
 import chat.mural.core.MinuteBalance
 import chat.mural.ui.AccountSheet
 import chat.mural.ui.MuralTheme
@@ -55,22 +54,6 @@ class AccountSheetTest {
         compose.setContent { MuralTheme { AccountSheet(member, {}, {}, {}, {}, {}) } }
         compose.onNodeWithTag("account-minute-balance").assertTextEquals(context.getString(R.string.account_seconds_value, "5"))
         compose.onNodeWithTag("account-buy-minutes").assertDoesNotExist()
-        compose.onNodeWithTag("account-conversation-source").assertDoesNotExist()
-    }
-
-    @Test fun minutesRequireAnExplicitChoiceAndCannotChangeDuringAConversation() {
-        val running = mutableStateOf(false)
-        val provider = mutableStateOf(ConversationProvider.PERSONAL_KEY)
-        compose.setContent { MuralTheme {
-            AccountSheet(member, {}, {}, {}, {}, {}, provider = provider.value, hostedAvailable = true,
-                conversationRunning = running.value, onSelectProvider = { provider.value = it })
-        } }
-        compose.runOnIdle { assertEquals(ConversationProvider.PERSONAL_KEY, provider.value) }
-        compose.onNodeWithTag("account-conversation-source").performScrollTo().performClick()
-        compose.onNodeWithTag("account-conversation-source-HOSTED_MINUTES").performClick()
-        compose.onNodeWithText(context.getString(R.string.hosted_minimum_charge_disclosure)).performScrollTo().assertIsDisplayed()
-        compose.runOnIdle { assertEquals(ConversationProvider.HOSTED_MINUTES, provider.value); running.value = true }
-        compose.onNodeWithTag("account-conversation-source").assertIsNotEnabled()
     }
 
     @Test fun accountTransitionDisablesAnotherSignInOrPurchase() {

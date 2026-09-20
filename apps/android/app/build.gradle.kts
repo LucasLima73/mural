@@ -29,6 +29,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "MANAGED_API_ORIGIN", buildString(muralConfiguration("mural.apiOrigin")))
         buildConfigField("String", "GOOGLE_SERVER_CLIENT_ID", buildString(muralConfiguration("mural.googleServerClientID")))
+        buildConfigField("String", "ROOMS_ORIGIN", buildString(muralConfiguration("mural.roomsOrigin")))
         buildConfigField("boolean", "MINUTE_PURCHASES_ENABLED", muralMinutePurchases)
         buildConfigField("String", "PURCHASE_CHANNEL", buildString(muralPurchaseChannel))
         buildConfigField("String", "MINUTE_PURCHASE_ENVIRONMENT", buildString(muralMinuteEnvironment))
@@ -45,6 +46,7 @@ android {
             matchingFallbacks += "debug"
             buildConfigField("String", "MANAGED_API_ORIGIN", "\"\"")
             buildConfigField("String", "GOOGLE_SERVER_CLIENT_ID", "\"\"")
+            buildConfigField("String", "ROOMS_ORIGIN", "\"\"")
             buildConfigField("boolean", "MINUTE_PURCHASES_ENABLED", "false")
             buildConfigField("String", "MINUTE_PURCHASE_ENVIRONMENT", "\"test\"")
         }

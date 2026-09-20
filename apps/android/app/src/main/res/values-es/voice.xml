@@ -1,0 +1,21 @@
+<resources>
+    <string name="rooms_voice">Voz</string>
+    <string name="rooms_voice_end">Terminar voz</string>
+    <string name="rooms_voice_friend_on">%1$s está en la voz</string>
+    <string name="rooms_voice_waiting">Esperando a que un amigo entre en la voz</string>
+    <string name="rooms_voice_connecting">Conectando la voz…</string>
+    <string name="rooms_voice_live">Voz conectada</string>
+    <string name="rooms_voice_open">Micrófono abierto</string>
+    <string name="rooms_voice_muted">Micrófono silenciado</string>
+    <string name="rooms_voice_hold">Mantén el botón para hablar</string>
+    <string name="rooms_voice_switch_ptt">Pulsar para hablar</string>
+    <string name="rooms_voice_switch_open">Micrófono abierto</string>
+    <string name="rooms_mic_mute">Silenciar micrófono</string>
+    <string name="rooms_mic_unmute">Activar micrófono</string>
+    <string name="rooms_mic_hold">Mantén para hablar</string>
+    <string name="voice_problem_permission">Permite el micrófono para usar la voz.</string>
+    <string name="voice_problem_busy">Otra llamada o conversación está usando el audio.</string>
+    <string name="voice_problem_interrupted">La voz se detuvo porque otra app tomó el audio.</string>
+    <string name="voice_problem_audio">No se pudo iniciar el audio. Vuelve a activar la voz.</string>
+    <string name="voice_problem_network">No se pudo conectar la voz. Tus redes podrían estar bloqueándola.</string>
+</resources>

@@ -1,0 +1,26 @@
+<resources>
+    <string name="onboarding_back">Atrás</string>
+    <string name="onboarding_continue_button">Continuar</string>
+    <string name="onboarding_start_button">Empezar</string>
+    <string name="onboarding_name_title">¿Cómo te\nllamamos?</string>
+    <string name="onboarding_name_label">Tu nombre</string>
+    <string name="onboarding_name_note">Tus amigos ven este nombre en tus salas.</string>
+    <string name="onboarding_phones_title">Ponte los\nauriculares</string>
+    <string name="onboarding_phones_body">Reproduce un sonido y escucha. Debe ir de tu oído izquierdo al derecho, y volver.</string>
+    <string name="onboarding_phones_play">Reproducir sonido</string>
+    <string name="onboarding_phones_playing">Escuchando…</string>
+    <string name="onboarding_phones_note">¿Lo oyes solo por un lado? Comprueba que los auriculares estén conectados.</string>
+    <string name="onboarding_tastes_title">¿Qué te apetece\nescuchar?</string>
+    <string name="onboarding_tastes_body">Elige los que quieras. Empezaremos por ahí.</string>
+    <string name="onboarding_taste_slide_body">Cepillos, papel, lápiz. El sonido sigue tu dedo.</string>
+    <string name="onboarding_taste_tap_body">Teclas, monedas, gotas. Un toque, un sonido.</string>
+    <string name="onboarding_taste_ambient_body">Lluvia, fuego, olas. Una escena que sigue sonando.</string>
+    <string name="onboarding_tastes_note">Podrás explorarlo todo más tarde.</string>
+    <string name="onboarding_mic_title">Habla mientras\njuegas</string>
+    <string name="onboarding_mic_body">El chat de voz te deja hablar con un amigo de tu sala. Usa el micrófono solo mientras la voz está activada.</string>
+    <string name="onboarding_mic_allow">Permitir micrófono</string>
+    <string name="onboarding_mic_allowed">Micrófono permitido</string>
+    <string name="onboarding_mic_note">¿Ahora no? La voz lo pedirá cuando la actives.</string>
+    <string name="onboarding_pan_left">I</string>
+    <string name="onboarding_pan_right">D</string>
+</resources>

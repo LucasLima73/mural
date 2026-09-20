@@ -1,0 +1,26 @@
+<resources>
+    <string name="onboarding_back">Back</string>
+    <string name="onboarding_continue_button">Continue</string>
+    <string name="onboarding_start_button">Start</string>
+    <string name="onboarding_name_title">What should we\ncall you?</string>
+    <string name="onboarding_name_label">Your name</string>
+    <string name="onboarding_name_note">Your friends see this name in your rooms.</string>
+    <string name="onboarding_phones_title">Put your\nheadphones on</string>
+    <string name="onboarding_phones_body">Play a sound and listen. It should travel from your left ear to your right, and back.</string>
+    <string name="onboarding_phones_play">Play sound</string>
+    <string name="onboarding_phones_playing">Listening…</string>
+    <string name="onboarding_phones_note">Hearing it from one side only? Check that your headphones are connected.</string>
+    <string name="onboarding_tastes_title">What do you feel\nlike hearing?</string>
+    <string name="onboarding_tastes_body">Pick as many as you like. We\'ll start there.</string>
+    <string name="onboarding_taste_slide_body">Brushes, paper, pencil. The sound follows your finger.</string>
+    <string name="onboarding_taste_tap_body">Keys, coins, drops. One touch, one sound.</string>
+    <string name="onboarding_taste_ambient_body">Rain, fire, waves. A scene that keeps playing.</string>
+    <string name="onboarding_tastes_note">You can explore everything later.</string>
+    <string name="onboarding_mic_title">Talk while\nyou play</string>
+    <string name="onboarding_mic_body">Voice chat lets you talk to a friend in your room. It uses the microphone only while voice is on.</string>
+    <string name="onboarding_mic_allow">Allow microphone</string>
+    <string name="onboarding_mic_allowed">Microphone allowed</string>
+    <string name="onboarding_mic_note">Not now? Voice will ask when you turn it on.</string>
+    <string name="onboarding_pan_left">L</string>
+    <string name="onboarding_pan_right">R</string>
+</resources>

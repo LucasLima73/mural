@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import chat.mural.R
 import chat.mural.core.AccountNotice
 import chat.mural.core.AccountState
-import chat.mural.core.ConversationProvider
 import java.text.NumberFormat
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,11 +28,7 @@ import java.text.NumberFormat
 fun AccountSheet(state: AccountState, onDismiss: () -> Unit, onSignIn: () -> Unit,
                  onSignOut: () -> Unit, onDelete: () -> Unit, onRefresh: () -> Unit,
                  transitionBusy: Boolean = false,
-                 provider: ConversationProvider = ConversationProvider.PERSONAL_KEY,
-                 hostedAvailable: Boolean = false, conversationRunning: Boolean = false,
-                 onSelectProvider: (ConversationProvider) -> Unit = {},
-                 onBuyMinutes: (() -> Unit)? = null,
-                 guestMinutes: Long? = null, memberAlreadyClaimedTrial: Boolean = false) {
+                 onBuyMinutes: (() -> Unit)? = null) {
     var confirmDelete by rememberSaveable(state.accountID) { mutableStateOf(false) }
     var requestDeletion by rememberSaveable(state.accountID) { mutableStateOf(false) }
     var confirmSignOut by rememberSaveable { mutableStateOf(false) }
@@ -71,17 +66,8 @@ fun AccountSheet(state: AccountState, onDismiss: () -> Unit, onSignIn: () -> Uni
                         }
                     }
                 }
-                if (memberAlreadyClaimedTrial) Text(stringResource(R.string.guest_member_trial_used),
-                    style = MaterialTheme.typography.bodyMedium, color = MuralColors.Secondary,
-                    modifier = Modifier.testTag("guest-member-trial-used"))
                 Text(stringResource(R.string.account_local_data), style = MaterialTheme.typography.bodyMedium, color = MuralColors.Secondary)
             } else {
-                if (guestMinutes != null) {
-                    Text(minuteBalanceText(guestMinutes), style = MaterialTheme.typography.headlineMedium,
-                        modifier = Modifier.testTag("guest-account-balance"))
-                    Text(stringResource(R.string.guest_account_detail), color = MuralColors.Secondary,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-                }
                 val enabled = !busy && state.googleAvailable
                 Image(painterResource(R.drawable.google_sign_in), stringResource(R.string.account_google),
                     Modifier.width(260.dp).height(62.dp).alpha(if (enabled) 1f else .45f)
@@ -90,18 +76,6 @@ fun AccountSheet(state: AccountState, onDismiss: () -> Unit, onSignIn: () -> Uni
                     style = MaterialTheme.typography.bodyMedium, color = MuralColors.Secondary)
                 Text(stringResource(R.string.account_agreement), style = MaterialTheme.typography.bodySmall, color = MuralColors.Secondary)
             }
-                if (hostedAvailable || provider == ConversationProvider.HOSTED_MINUTES) {
-                    SettingsGroup(title = stringResource(R.string.account_conversation_source),
-                        footer = if (provider == ConversationProvider.HOSTED_MINUTES) stringResource(R.string.hosted_minimum_charge_disclosure) else null) {
-                        SettingsChoiceRow(title = stringResource(R.string.account_use),
-                            value = stringResource(if (provider == ConversationProvider.HOSTED_MINUTES) R.string.account_mural_minutes else R.string.account_personal_key),
-                            selected = provider.name, options = listOf(
-                                ConversationProvider.PERSONAL_KEY.name to stringResource(R.string.account_personal_key),
-                                ConversationProvider.HOSTED_MINUTES.name to stringResource(R.string.account_mural_minutes)),
-                            tag = "account-conversation-source", enabled = !busy && !conversationRunning,
-                            onSelect = { onSelectProvider(ConversationProvider.valueOf(it)) })
-                    }
-                }
 
             if (busy) CircularProgressIndicator(Modifier.size(22.dp), color = MuralColors.Ink, strokeWidth = 2.dp)
             state.notice?.let { Text(stringResource(it.textResource()), color = MuralColors.Secondary,
